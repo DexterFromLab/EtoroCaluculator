@@ -51,42 +51,22 @@ def create_transaction_list():
     transaction_list = []
     for i in range(numberOfTransactions):
         cell_number = i + 2
-        open_date_cell = str('E' + str(cell_number))
         closed_date_cell = str('F' + str(cell_number))
-        open_rate = str(('J' + str(cell_number)))
-        closed_rate = str(('K' + str(cell_number)))
-        units_cell = str(('D' + str(cell_number)))
+        profit_cell = str(('I' + str(cell_number)))
 
-        open_day = format_date(closed_positions_sheet[open_date_cell].value)
         closed_day = format_date(closed_positions_sheet[closed_date_cell].value)
 
-        open_exchange_usd_pln_rate = float(find_usd_pln_rate_for_end_of_day(open_day))
         closed_exchange_usd_pln_rate = float(find_usd_pln_rate_for_end_of_day(closed_day))
 
-        open_rate = float(closed_positions_sheet[open_rate].value)
-        closed_rate = float(closed_positions_sheet[closed_rate].value)
-
-        units = float(closed_positions_sheet[units_cell].value)
-
-        open_pln_value = units * open_rate * open_exchange_usd_pln_rate
-        closed_pln_value = units * closed_rate * closed_exchange_usd_pln_rate
-
-        profit = open_pln_value - closed_pln_value
-
-        transaction_list.append([open_day,
-                                 closed_day,
-                                 open_rate,
-                                 closed_rate,
-                                 open_exchange_usd_pln_rate,
-                                 closed_exchange_usd_pln_rate,
-                                 profit])
+        profit = float(closed_positions_sheet[profit_cell].value) * closed_exchange_usd_pln_rate
+        transaction_list.append([closed_day, closed_exchange_usd_pln_rate, profit])
     return transaction_list
 
 
 def calculate_transaction_profits_in_pln(closed_transactions):
     profit = float(0)
     for i in range(numberOfTransactions):
-        profit += closed_transactions[i][6]
+        profit += closed_transactions[i][2]
     return profit
 
 
